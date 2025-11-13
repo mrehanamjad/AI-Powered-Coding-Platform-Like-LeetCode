@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
-import { Filter, LayoutGrid, List } from "lucide-react";
+import { Filter, LayoutGrid, List, Search } from "lucide-react";
 import Header from "@/components/Header";
 import FilterPanel from "@/components/FilterPanel";
 import ProblemTable, { Problem } from "@/components/ProblemTable";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 // Mock data
 const mockProblems: Problem[] = [
@@ -95,48 +96,46 @@ const Problems = () => {
           </div>
 
           {/* Controls */}
-          <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="lg:hidden"
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-              >
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-              </Button>
-              
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground hidden md:inline">
-                  {mockProblems.length} problems
-                </span>
-              </div>
+          <div className="mb-6 space-y-4">
+            {/* Search Bar - Full Width on Mobile */}
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search problems..."
+                className="pl-9 bg-secondary/50 border-border focus:bg-background"
+              />
             </div>
 
-            <div className="flex items-center gap-3">
-              {/* Sort */}
-              <Select defaultValue="recent">
-                <SelectTrigger className="w-[140px] md:w-[180px]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="recent">Most Recent</SelectItem>
-                  <SelectItem value="difficulty">Difficulty</SelectItem>
-                  <SelectItem value="acceptance">Acceptance Rate</SelectItem>
-                  <SelectItem value="title">Title</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* View Toggle - Desktop only */}
-              <div className="hidden md:flex items-center gap-1 p-1 bg-muted rounded-lg">
-                <Button variant="ghost" size="icon" className="h-8 w-8 bg-background">
-                  <List className="h-4 w-4" />
+            {/* Filters and Sort Controls */}
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-center gap-3 flex-wrap">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="lg:hidden"
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                >
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filters
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <LayoutGrid className="h-4 w-4" />
-                </Button>
+                
+                <Select defaultValue="recent">
+                  <SelectTrigger className="w-[140px] md:w-[180px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="recent">Most Recent</SelectItem>
+                    <SelectItem value="difficulty">Difficulty</SelectItem>
+                    <SelectItem value="acceptance">Acceptance Rate</SelectItem>
+                    <SelectItem value="title">Title</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+
+              <span className="text-sm text-muted-foreground">
+                {mockProblems.length} problems
+              </span>
             </div>
           </div>
 

@@ -8,9 +8,9 @@ interface DifficultyBadgeProps {
 
 const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
   const variants = {
-    Easy: "bg-difficulty-easy-bg text-difficulty-easy",
-    Medium: "bg-difficulty-medium-bg text-difficulty-medium",
-    Hard: "bg-difficulty-hard-bg text-difficulty-hard",
+    Easy: "bg-green-500/50",
+    Medium: "bg-yellow-500/50",
+    Hard: "bg-red-500/50",
   };
 
   return (

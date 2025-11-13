@@ -4,14 +4,16 @@ import User from "@/models/user.model";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password,userName, name } = await request.json();
+    const { email, password, name } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(
-        { message: "Email and Password are required" },
+        { message: "All fields are required" },
         { status: 400 }
       );
     }
+
+    const userName = email.split("@")[0] +  Math.floor(Math.random() * 999) + 1;
 
     await connectionToDatabase();
 
