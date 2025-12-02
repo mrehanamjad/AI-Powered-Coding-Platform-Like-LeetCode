@@ -410,11 +410,11 @@ function ProblemPage() {
               />
             </ResizablePanel>
 
-            <ResizableHandle withHandle />
+            {/* <ResizableHandle withHandle /> */}
 
-            <ResizablePanel defaultSize={25} minSize={20}>
+            {/* <ResizablePanel defaultSize={25} minSize={20}>
               <ChatPanel />
-            </ResizablePanel>
+            </ResizablePanel> */}
           </ResizablePanelGroup>
         </div>
       )}

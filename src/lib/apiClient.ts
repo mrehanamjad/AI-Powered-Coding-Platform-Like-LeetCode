@@ -1,6 +1,7 @@
 import { ProblemI } from "@/models/problem.model";
 import { SubmissionI } from "@/models/submission.model";
 import { TestCaseI } from "@/models/testcase.model";
+import { UserI } from "@/models/user.model";
 import mongoose from "mongoose";
 
 // utils/apiClient.ts
@@ -9,6 +10,7 @@ type FetchOpts = {
   body?: unknown;
   headers?: Record<string, string>;
 };
+
 
 export interface SubmissionForProblemI extends Document {
   _id: mongoose.Types.ObjectId;
@@ -19,6 +21,8 @@ export interface SubmissionForProblemI extends Document {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export type PublicUser = Omit<UserI, "password">;
 
 
 

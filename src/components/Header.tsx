@@ -127,7 +127,7 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  if (pathname.split("/").length > 2) {
+  if (pathname.split("/").length > 2 && pathname.includes("problems/")) {
     return null; 
   }
 

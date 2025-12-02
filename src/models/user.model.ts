@@ -6,24 +6,9 @@ export interface UserI {
   name: string;
   email: string;
   password: string;
-  profilePic: { id: string; url: string };
+  avatar: { id: string; url: string };
   phone: string;
   bio: string;
-  level: number;
-  score: number;
-  maxStreak: number;
-  currentStreak: {
-    value: number;
-    date: Date;
-  };
-  languages: [{
-    name: string;
-    questionSolved: number;
-  }];
-  skills: [{
-    name: string;
-    questionSolved: number;
-  }];
   _id: mongoose.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
@@ -58,7 +43,7 @@ const UserSchema = new Schema<UserI & Document>(
       required: true,
       minlength: 8,
     },
-    profilePic: {
+    avatar: {
       url: {
         type: String,
         default: "",
@@ -72,35 +57,13 @@ const UserSchema = new Schema<UserI & Document>(
       type: String,
       required: false,
       default: "",
-      match:/^\+?[0-9 ]{10,17}$/,
+      match: /^\+?[0-9 ]{10,17}$/,
     },
     bio: {
       type: String,
       maxlength: 150,
       default: "",
     },
-     // ---------- Performance / XP / Level System ----------
-    level: { type: Number, default: 1, index: true }, // 🔍 Useful for leaderboard
-    score: { type: Number, default: 0, index: true }, // 🔍 Leaderboard queries
-    maxStreak: { type: Number, default: 0 },
-    currentStreak: {
-      value: { type: Number, default: 0 },
-      date: { type: Date, default: Date.now },
-    },
-
-    // ---------- Solved Stats ----------
-    languages: [
-      {
-        name: { type: String, trim: true },
-        questionSolved: { type: Number, default: 0 },
-      },
-    ],
-    skills: [
-      {
-        name: { type: String, trim: true },
-        questionSolved: { type: Number, default: 0 },
-      },
-    ],
   },
   {
     timestamps: true,
@@ -108,13 +71,8 @@ const UserSchema = new Schema<UserI & Document>(
 );
 
 // ---------- Indexing ----------
-UserSchema.index({ userName: 1 });
-UserSchema.index({ email: 1 });
 UserSchema.index({ name: 1 });
-UserSchema.index({ score: -1 }); // Fast sorting for leaderboards
-UserSchema.index({ level: -1, score: -1 }); // Compound index for leaderboard rank
-UserSchema.index({ "skills.name": 1 }); // For filtering/search by skill
-UserSchema.index({ "languages.name": 1 }); // For filtering/search by language
+
 
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
