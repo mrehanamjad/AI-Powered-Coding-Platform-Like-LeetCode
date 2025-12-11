@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, models } from "mongoose";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 export interface SubmissionI extends Document {
   _id: mongoose.Types.ObjectId;
@@ -8,7 +9,12 @@ export interface SubmissionI extends Document {
   language: string;
   totalTestCases: number;
   passedTestCases: number;
-  status: "accepted" | "wrongAnswer" | "runtimeError" | "compileError" | "tle";
+  status:
+    | "accepted"
+    | "wrongAnswer"
+    | "runtimeError"
+    | "compileError"
+    | "tle";
   lastFailedTestCase?: {
     input: string;
     expectedOutput: string;
@@ -20,7 +26,7 @@ export interface SubmissionI extends Document {
   updatedAt?: Date;
 }
 
-const SubmissionSchema: Schema<SubmissionI> = new Schema(
+const SubmissionSchema = new Schema<SubmissionI>(
   {
     problemId: {
       type: Schema.Types.ObjectId,
@@ -76,10 +82,14 @@ const SubmissionSchema: Schema<SubmissionI> = new Schema(
   { timestamps: true }
 );
 
-// Compound Index: userId + problemId (FAST lookup for your GET API)
+// Compound Index: userId + problemId
 SubmissionSchema.index({ userId: 1, problemId: 1 });
 
+SubmissionSchema.plugin(aggregatePaginate);
+
+
 const Submission =
-  models.Submission || mongoose.model<SubmissionI>("Submission", SubmissionSchema);
+  models.Submission ||
+  mongoose.model<SubmissionI>("Submission", SubmissionSchema);
 
 export default Submission;
