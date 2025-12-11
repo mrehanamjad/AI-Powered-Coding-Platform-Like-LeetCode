@@ -1,11 +1,16 @@
 // ============================================================================
-// Difficulty Configuration (Score & XP Tables)
+// Difficulty Configuration (Score & XP Tables) & Badges
 // ============================================================================
 //
 // These tables define the reward system for accepted solutions.
 // Score is used for leaderboards.
 // XP is used for leveling and user progression.
 // ============================================================================
+import { ProblemI } from '@/models/problem.model';
+import { SubmissionI } from '@/models/submission.model';
+import { UserStatisticI } from '@/models/userStatistic.model';
+
+
 
 export const SCORE_TABLE = {
   Easy: 5,
@@ -204,3 +209,76 @@ export function updateStreak({
     maxStreak: Math.max(maxStreak, newStreak),
   };
 }
+
+
+// ================================================================================
+// Badges:
+// ================================================================================
+
+export function calculateBadges(
+  userStats: UserStatisticI
+): string[] {
+  const badges = new Set<string>(userStats.badge || []);
+
+  // Extract stats
+  const easy = userStats.problemSolved.easy || 0;
+  const medium = userStats.problemSolved.medium || 0;
+  const hard = userStats.problemSolved.hard || 0;
+  const total = easy + medium + hard;
+  const maxStreak = userStats.maxStreak || 0;
+
+  // ---------------------------
+  // FIRST SUBMISSION + FIRST PROBLEM
+  // ---------------------------
+  if (total >= 1) badges.add("first-problem");
+  badges.add("first-submission");
+
+  // ---------------------------
+  // GLOBAL PROBLEM BADGES
+  // ---------------------------
+  const problemMilestones = [10, 50, 100, 300, 500];
+
+  for (const milestone of problemMilestones) {
+    if (total >= milestone) {
+      badges.add(`${milestone}-problems`);
+    }
+  }
+
+  // ---------------------------
+  // DIFFICULTY BADGES
+  // ---------------------------
+  const difficultyMap = {
+    easy,
+    medium,
+    hard,
+  };
+
+  const difficultyMilestones = [10, 50, 100, 500];
+
+  for (const [diff, count] of Object.entries(difficultyMap)) {
+    for (const milestone of difficultyMilestones) {
+      if (count >= milestone) {
+        badges.add(`${milestone}-${diff}`);
+      }
+    }
+  }
+
+  // ---------------------------
+  // STREAK BADGES
+  // ---------------------------
+  const streakMilestones = [10, 30, 100, 360];
+
+  for (const milestone of streakMilestones) {
+    if (maxStreak >= milestone) {
+      badges.add(`${milestone}-day-streak`);
+    }
+  }
+
+  // Special streak badge
+  if (maxStreak >= 180) {
+    badges.add("marathoner");
+  }
+
+  return Array.from(badges);
+}
+

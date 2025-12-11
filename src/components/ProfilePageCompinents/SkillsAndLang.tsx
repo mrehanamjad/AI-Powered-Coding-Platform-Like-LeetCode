@@ -67,44 +67,52 @@ function categorizeSkillsByName(skills: Skill[]): CategorizedSkills {
   return categories;
 }
 
-const languages = [
-  { name: "Python", questioSolved: 20 },
-  { name: "Java", questioSolved: 2 },
-];
+// const languages = [
+//   { name: "Python", questioSolved: 20 },
+//   { name: "Java", questioSolved: 2 },
+// ];
 
-const skills = [
-  { name: "Array", questionSolved: 6 },
-  { name: "String", questionSolved: 2 },
-  { name: "Hash Table", questionSolved: 4 },
-  { name: "Linked List", questionSolved: 3 },
-  { name: "Stack", questionSolved: 5 },
-  { name: "Queue", questionSolved: 3 },
-  { name: "Tree", questionSolved: 7 },
-  { name: "Graph", questionSolved: 2 },
-  { name: "Dynamic Programming", questionSolved: 1 },
-  { name: "Recursion", questionSolved: 4 },
-  { name: "Sorting", questionSolved: 3 },
-  { name: "Searching", questionSolved: 2 },
-  { name: "Two Pointers", questionSolved: 5 },
-  { name: "Sliding Window", questionSolved: 3 },
-  { name: "Greedy", questionSolved: 2 },
-  { name: "Binary Search", questionSolved: 4 },
-  { name: "Backtracking", questionSolved: 2 },
-  { name: "Math", questionSolved: 3 },
-  { name: "Bit Manipulation", questionSolved: 1 },
-  { name: "Matrix", questionSolved: 3 },
-];
-
-
-const categoriedSkills = categorizeSkillsByName(skills);
+// const skills = [
+//   { name: "Array", questionSolved: 6 },
+//   { name: "String", questionSolved: 2 },
+//   { name: "Hash Table", questionSolved: 4 },
+//   { name: "Linked List", questionSolved: 3 },
+//   { name: "Stack", questionSolved: 5 },
+//   { name: "Queue", questionSolved: 3 },
+//   { name: "Tree", questionSolved: 7 },
+//   { name: "Graph", questionSolved: 2 },
+//   { name: "Dynamic Programming", questionSolved: 1 },
+//   { name: "Recursion", questionSolved: 4 },
+//   { name: "Sorting", questionSolved: 3 },
+//   { name: "Searching", questionSolved: 2 },
+//   { name: "Two Pointers", questionSolved: 5 },
+//   { name: "Sliding Window", questionSolved: 3 },
+//   { name: "Greedy", questionSolved: 2 },
+//   { name: "Binary Search", questionSolved: 4 },
+//   { name: "Backtracking", questionSolved: 2 },
+//   { name: "Math", questionSolved: 3 },
+//   { name: "Bit Manipulation", questionSolved: 1 },
+//   { name: "Matrix", questionSolved: 3 },
+// ];
 
 
-
-export function SkillsAndLang() {
+export function SkillsAndLang({languages,skills}: {
+  languages: {
+    name: string;
+    questionSolved: number;
+  }[];
+  skills: {
+    name: string;
+    questionSolved: number;
+  }[];
+}) {
+  const categoriedSkills = categorizeSkillsByName(skills);
   return (
     <div className="space-y-4 md:sticky md:top-20">
       <Card className="bg-card border-border p-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Languages</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">
+          Languages
+        </h2>
         <div className="space-y-3">
           {languages.map((lang) => (
             <div
@@ -115,7 +123,7 @@ export function SkillsAndLang() {
                 {lang.name}
               </span>
               <span className="text-sm text-muted-foreground">
-                {lang.questioSolved} problems
+                {lang.questionSolved} problems
               </span>
             </div>
           ))}
@@ -124,7 +132,7 @@ export function SkillsAndLang() {
 
       <Card className="bg-card border-border p-6">
         <h2 className="text-lg font-semibold text-foreground mb-4">Skills</h2>
-        
+
         <div className="space-y-4">
           <div>
             <h3 className="text-sm font-medium flex items-center gap-1 mb-3">

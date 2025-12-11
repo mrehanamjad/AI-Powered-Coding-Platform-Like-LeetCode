@@ -16,6 +16,7 @@ import {
   isStreakContinued,
 } from "@/lib/stats";
 import { updateUserStatistics } from "./updateUserStats";
+import { recordDailyActivity } from "./recordActivity";
 
 /**
  * @method POST
@@ -179,16 +180,24 @@ export async function POST(req: NextRequest) {
     // We run this asynchronously. In a high-scale app, this would go to a message queue (Redis/BullMQ).
     // For now, we await it to ensure consistency, but wrap in try/catch so it doesn't block the UI response if it errors.
     try {
-      await updateUserStatistics({
-        userId: session.user.id,
-        problemId: problemId,
-        status: status,
-        language: language
-      });
-    } catch (statsError) {
-      // Log this silently or to a monitoring service (Sentry). 
-      // Do NOT fail the request just because stats failed calculation.
-      console.error("Failed to update user stats:", statsError);
+      await Promise.all([
+        // Your existing stats update
+        updateUserStatistics({
+          userId: session.user.id,
+          problemId,
+          status,
+          language,
+        }),
+
+        // NEW: Record Daily Activity for the Graph
+        recordDailyActivity({
+          userId: session.user.id,
+          status,
+        }),
+      ]);
+      
+    } catch (error) {
+      console.error("Stats/Activity update failed", error);
     }
 
     // 8) RETURN SUCCESS

@@ -1,3 +1,4 @@
+import ContributionGraph from "@/components/ContributionGraph";
 import Achievements from "@/components/ProfilePageCompinents/Achievements";
 import { ProfileHeader } from "@/components/ProfilePageCompinents/ProfileHeader";
 import RecentActivity from "@/components/ProfilePageCompinents/RecentActivity";
@@ -5,6 +6,7 @@ import { SkillsAndLang } from "@/components/ProfilePageCompinents/SkillsAndLang"
 import { StatsOverview } from "@/components/ProfilePageCompinents/StatsOverview";
 import { PublicUser } from "@/lib/apiClient";
 import { UserStatisticI } from "@/models/userStatistic.model";
+import { StatsOverviewPrompI } from "@/types/compInterfaces";
 import React from "react";
 
 async function getUserProfile(username: string): Promise<PublicUser | null> {
@@ -57,17 +59,21 @@ async function Page({ params }: { params: Promise<{ username: string }> }) {
 
   const userStats = await getUserStats(userData._id.toString());
 
+  
+
+
   return (
     <div>
       <ProfileHeader  />
       <div className="md:grid md:grid-cols-4 gap-6 py-10 px-4 max-md:flex-col-reverse">
         <div className="md:col-span-3 mb-4">
-          <StatsOverview  />
-          <Achievements  />
+          <StatsOverview data={{...userStats} as StatsOverviewPrompI} />
+          <ContributionGraph userId={userData._id.toString()} userJoiningTime={userData.createdAt!} />
+          <Achievements badges={userStats?.badge || []} />
           <RecentActivity  />
         </div>
         <div className="md:col-span-1">
-          <SkillsAndLang  />
+          <SkillsAndLang  languages={userStats?.languages || []} skills={userStats?.skills || []}/>
         </div>
       </div>
     </div>

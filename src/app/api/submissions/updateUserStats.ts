@@ -8,6 +8,7 @@ import {
   calculateLevel,
   updateStreak,
   isStreakContinued,
+  calculateBadges,
 } from "@/lib/stats";
 
 interface UpdateStatsParams {
@@ -87,7 +88,13 @@ export async function updateUserStatistics({
 
   // -- Difficulty Counts (Only on Accept)
   if (normalizedStatus === "accepted") {
-    stats.problemSolved[difficulty] += 1;
+    if (difficulty == 'Easy') {
+      stats.problemSolved.easy += 1;
+    } else if (difficulty == 'Medium') {
+      stats.problemSolved.medium += 1;
+    } else if (difficulty == 'Hard') {
+      stats.problemSolved.hard += 1;
+    }
 
     // -- Language Stats (Array Management)
     const langIndex = stats.languages.findIndex(
@@ -114,6 +121,8 @@ export async function updateUserStatistics({
       });
     }
   }
+
+  stats.badge =  calculateBadges(stats);
 
   // 6. Save (Atomic save of the document)
   await stats.save();
