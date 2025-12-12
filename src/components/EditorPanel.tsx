@@ -3983,7 +3983,7 @@ export function EditorPanel({
       <div
         className={cn(
           "bg-card border-t transition-all duration-300 ease-in-out flex flex-col",
-          isConsoleOpen ? "h-[450px]" : "h-[40px]"
+          isConsoleOpen ? "h-[300px]" : "h-[40px]"
         )}
       >
         <ConsoleHeader

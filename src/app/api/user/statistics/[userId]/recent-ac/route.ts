@@ -12,14 +12,23 @@ export async function GET(req: NextRequest,
      const { userId } = await  params;
     await connectionToDatabase();
 
+    if(!userId) {
+      return NextResponse.json(
+      { error: "User id param is required" },
+      { status: 404 }
+    );
+    }
+
     const rawSubmissions = await Submission.find({
-      userId: new mongoose.Types.ObjectId(userId),
+      userId: new mongoose.Types.ObjectId(userId)
     })
       .sort({ createdAt: -1 }) // Newest first
       .limit(50) // Fetching 50 ensures we likely find 10 distinct consecutive groups
       .populate("problemId", "title problemId") // Get Title and Frontend ID
       .select("status createdAt problemId") // Only fetch needed fields
       .lean();
+
+    
 
     // 3. Filter Consecutive Duplicates
     const distinctSubmissions: any[] = [];

@@ -2,6 +2,9 @@
 import { ImageKitProvider } from "imagekitio-next";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
+import { useRef } from 'react'
+import { Provider as StoreProvider } from 'react-redux'
+import { makeStore, AppStore } from '@/lib/redux/store'
 
 const urlEndpoint = process.env.NEXT_PUBLIC_URL_ENDPOINT;
 const publicKey = process.env.NEXT_PUBLIC_PUBLIC_KEY;
@@ -27,6 +30,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 //     }
 //   };
 
+// for redux toolkit store provider:
+const storeRef = useRef<AppStore>(undefined)
+  if (!storeRef.current) {
+    // Create the store instance the first time this renders
+    storeRef.current = makeStore()
+  }
+
   return (
     <SessionProvider>
       <ImageKitProvider
@@ -34,8 +44,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         publicKey={publicKey}
         // authenticator={authenticator}
       >
-        {children}
+
+        <StoreProvider store={storeRef.current}>{children}</StoreProvider>
     <Toaster position="top-right"  richColors={true}  />
+
       </ImageKitProvider>
     </SessionProvider>
   );

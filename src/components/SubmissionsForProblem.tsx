@@ -3,17 +3,20 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { apiClient, SubmissionForProblemI } from "@/lib/apiClient";
-import { Loader2, FilePenLine, Plus, X } from "lucide-react";
+import { Loader2, FilePenLine, Plus, X, ArrowUpRight } from "lucide-react";
 import Note from "./editor/Note";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { setSubmissionIdIS } from "@/lib/redux/features/submissionSlice";
 
 interface SubmissionsForProblemProps {
   problemId: string;
+  isPage?: boolean
 }
 
-export function SubmissionsForProblem({ problemId }: SubmissionsForProblemProps) {
+export function SubmissionsForProblem({ problemId, isPage = false }: SubmissionsForProblemProps) {
   const [submissions, setSubmissions] = useState<SubmissionForProblemI[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useAppDispatch();
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSubmissionId, setCurrentSubmissionId] = useState<string | null>(
@@ -125,6 +128,10 @@ export function SubmissionsForProblem({ problemId }: SubmissionsForProblemProps)
     return date.toLocaleDateString();
   };
 
+  const handleOpenBtnClick = (submissionId: string) => {
+      dispatch(setSubmissionIdIS(submissionId))
+  }
+
   return (
     <>
       {loading ? (
@@ -136,6 +143,7 @@ export function SubmissionsForProblem({ problemId }: SubmissionsForProblemProps)
           <table className="w-full text-sm text-left min-w-[600px]">
             <thead className="bg-muted/50 text-muted-foreground border-b">
               <tr>
+                <th className="h-10 px-4 font-medium whitespace-nowrap"></th>
                 <th className="h-10 px-4 font-medium whitespace-nowrap">Status</th>
                 <th className="h-10 px-4 font-medium whitespace-nowrap">Language</th>
                 <th className="h-10 px-4 font-medium whitespace-nowrap">Date</th>
@@ -148,6 +156,11 @@ export function SubmissionsForProblem({ problemId }: SubmissionsForProblemProps)
                   key={sub._id.toString()}
                   className="border-b transition-colors hover:bg-muted/30"
                 >
+                  <td className="p-4">
+                    <button  onClick={() => handleOpenBtnClick(sub._id.toString())} >
+                    <ArrowUpRight className="w-4 h-4" />
+                    </button>
+                  </td>
                   <td className="p-4">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${getStatusColor(
