@@ -38,7 +38,7 @@ export const ProblemHeader = memo(function ProblemHeader() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/problems")}
+          onClick={() => router.push("/problems?page=1&sort=oldest")}
           className="mr-2"
         >
           <ArrowLeft className="h-5 w-5" />

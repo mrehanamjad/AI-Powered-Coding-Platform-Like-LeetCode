@@ -25,7 +25,7 @@ export async function getUserProfile(
       return null;
     }
 
-    const data = await res.json(); 
+    const data = await res.json();
     return data.data; //  API returns { data: publicData }
   } catch (error) {
     console.error("Error fetching profile:", error);
@@ -59,7 +59,18 @@ async function Page({ params }: { params: Promise<{ username: string }> }) {
   ]);
 
   if (!userData) {
-    notFound();
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-800">
+            User Not Found
+          </h2>
+          <p className="mt-2 text-sm text-gray-500">
+            The profile yo&apos;re looking for doesn&apos;t exist.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const userStats = await getUserStats(userData._id.toString());

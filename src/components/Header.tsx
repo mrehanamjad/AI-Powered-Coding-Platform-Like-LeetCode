@@ -40,7 +40,7 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              href="/problems"
+              href="/problems?page=1&sort=oldest"
               className="text-sm font-medium transition-smooth hover:text-primary"
             >
               Problems

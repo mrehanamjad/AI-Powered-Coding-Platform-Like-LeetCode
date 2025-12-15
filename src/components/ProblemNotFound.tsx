@@ -18,7 +18,7 @@ export function ProblemNotFound() {
       </p>
 
       <Button asChild variant="default" size="lg">
-        <Link href="/problems" className="gap-2">
+        <Link href="/problems?page=1&sort=oldest" className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           Back to Problems
         </Link>

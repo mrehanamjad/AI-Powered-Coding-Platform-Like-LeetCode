@@ -24,8 +24,10 @@ async function getProblems(searchParams: { [key: string]: string | string[] | un
     if (value) query.append(key, value as string);
   });
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
   try {
-    const res = await fetch(`http://localhost:3000/api/problems?${query.toString()}`, {
+    const res = await fetch(`${baseUrl}/api/problems?${query.toString()}`, {
       cache: "no-store", // Ensure fresh data on every request
     });
 
