@@ -1,7 +1,7 @@
 import { ProblemI } from "@/models/problem.model";
 import { SubmissionI } from "@/models/submission.model";
 import { TestCaseI } from "@/models/testcase.model";
-import { SubmissionForProblemI, SubmissionResponseT } from "./types";
+import { AICodeAnalyzerResposeI, SubmissionForProblemI, SubmissionResponseT } from "./types";
 
 // utils/apiClient.ts
 type FetchOpts = {
@@ -98,7 +98,12 @@ class ApiClient {
     return this.request(`/user/statistics/${userId}/activity?year=${selectedYear}`);
   }
 
-
+  async getAICodeAnalysis(data: { problemStatement: string; code: string; language: string }) {
+    return this.request<AICodeAnalyzerResposeI>("/ai/code-analyze", {
+      method: "POST",
+      body: data,
+    });
+  }
 
 
   //   async editVideo(id: string, data: { title?: string; description?: string }) {

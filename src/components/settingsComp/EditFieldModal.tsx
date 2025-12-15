@@ -61,10 +61,18 @@ export function EditFieldModal({
 
   // Determine which schema and default values to use
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  let schema: z.ZodType<UnifiedFormValues, any, any>;
-  let defaultValues: UnifiedFormValues;
+  let schema: any = detailsSchema;
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  let defaultValues: any = {};
 
-  if (field === "userName") {
+  if (field === "profile") {
+    schema = detailsSchema;
+    defaultValues = {
+      name: currentUser.name,
+      bio: currentUser.bio || "",
+      phone: currentUser.phone || "",
+    };
+  } else if (field === "userName") {
     schema = usernameSchema;
     defaultValues = {
       userName: currentUser.userName,
@@ -76,13 +84,6 @@ export function EditFieldModal({
       newPassword: "",
       confirmPassword: "",
     };
-  } else {
-    schema = detailsSchema;
-    defaultValues = {
-      name: currentUser.name,
-      bio: currentUser.bio || "",
-      phone: currentUser.phone || "",
-    };
   }
 
   // Initialize React Hook Form
@@ -93,7 +94,7 @@ export function EditFieldModal({
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: defaultValues as CombinedFormValues,
+    defaultValues,
     mode: "onChange",
   });
 

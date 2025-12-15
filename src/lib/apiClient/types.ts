@@ -30,3 +30,11 @@ export type SubmissionResponseT = Omit<SubmissionI, "problemId"> & {
 
 export type PublicUser = Omit<UserI, "password">;
 
+
+export interface AICodeAnalyzerResposeI {
+    timeComplexity: string;
+    spaceComplexity: string;
+    bugs: string[];
+    optimizations: string[];
+    feedback: string;
+}

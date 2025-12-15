@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
-import { Play, Send, Clock } from "lucide-react"; // Only simple icons needed here
+import { Play, Send, Clock } from "lucide-react";
 import {
   CppWrapper,
   JavaScriptWrapper,
@@ -31,7 +31,7 @@ import {
 import { SubmissionTab } from "./editor/SubmissionTab";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import {  useAppSelector } from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { toast } from "sonner";
 
 interface EditorPanelProps {
@@ -50,8 +50,14 @@ const languageMap: Record<string, string> = {
   cpp: "cpp",
 };
 
-
-const wrapperMap: Record<string, (userCode: string, functionName: string, testCases: {input: unknown[];expected: unknown;}[]) => string> = {
+const wrapperMap: Record<
+  string,
+  (
+    userCode: string,
+    functionName: string,
+    testCases: { input: unknown[]; expected: unknown }[]
+  ) => string
+> = {
   javascript: JavaScriptWrapper,
   python: PythonWrapper,
   java: JavaWrapper,
@@ -81,12 +87,15 @@ export function EditorPanel({
   theme,
   userId,
 }: EditorPanelProps) {
-  const [language, setLanguage] = useState<keyof StarterCodeI>("javascript");
+  // Initialize state with a default or the redux state immediately to prevent flicker
+  const languageIS = useAppSelector((state) => state.code.currentCodeLanguage);
+  console.log("rerender")
+  const [language, setLanguage] = useState<keyof StarterCodeI>(
+    (languageIS as keyof StarterCodeI) || "javascript"
+  );
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState<ExecutionResult | null>(null);
-  const [submitOutput, setSubmitOutput] = useState<ExecutionResult | null>(
-    null
-  );
+  const [submitOutput, setSubmitOutput] = useState<ExecutionResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("testcase");
@@ -96,17 +105,26 @@ export function EditorPanel({
   const { data: session } = useSession();
   const router = useRouter();
 
-  const languageIS = useAppSelector(
-    (state) => state.code.currentCodeLanguage
-  );
-
+  // EFFECT 1: Sync Language from Redux (Only runs when Redux state changes)
   useEffect(() => {
-    if (problem) {
-      const savedCode = localStorage.getItem(`code-${problem._id}-${language}`);
-      setCode(savedCode || problem.starterCode[language] || "");
+    if (languageIS) {
+      setLanguage(languageIS as keyof StarterCodeI);
     }
-    setLanguage(languageIS as keyof StarterCodeI);
-  }, [problem?._id, language, problem?.starterCode, languageIS,problem]);
+  }, [languageIS]);
+
+  // EFFECT 2: Load Code (Runs when problem or language changes)
+  useEffect(() => {
+    if (!problem) return;
+
+    // Check localStorage first
+    const savedCode = localStorage.getItem(`code-${problem._id}-${language}`);
+    
+    // If saved code exists, use it. Otherwise use starter code. 
+    // Fallback to empty string to ensure controlled input.
+    const codeToSet = savedCode || problem.starterCode?.[language] || "";
+    
+    setCode(codeToSet);
+  }, [problem, language]); // Dependency array is now clean
 
   const handleRunOrSubmit = async (type: "run" | "submit") => {
     if (!problem) return;
@@ -116,14 +134,17 @@ export function EditorPanel({
       );
       return;
     }
-    
+
     setIsSubmitting(type === "submit");
     setIsRunning(type === "run");
     setIsConsoleOpen(true);
     setActiveTab(type === "run" ? "result" : "submission");
+    
     if (type == "submit" && (!session || !session?.user.id)) {
       router.push("/a/login");
+      return; // Added return to stop execution
     }
+
     try {
       const wrapperFunction = wrapperMap[language];
       if (!wrapperFunction)
@@ -160,7 +181,7 @@ export function EditorPanel({
       // --- Status Logic ---
       let status: ExecutionStatus = "ACCEPTED";
       let errorDetails = "";
-      const parsedResults = [];
+      const parsedResults: any[] = [];
       let dbSubmissionId = "";
 
       if (result.compile && result.compile.code !== 0) {
@@ -261,8 +282,10 @@ export function EditorPanel({
         submissionId: dbSubmissionId,
         testCasesWithInputs: testCasesToRun,
       } as ExecutionResult;
+      
       if (type === "submit") setSubmitOutput(dataToSet);
       else setRunOutput(dataToSet);
+      
     } catch (error) {
       const errorDataToSet = {
         status: "INTERNAL_ERROR",
@@ -288,8 +311,6 @@ export function EditorPanel({
         onSubmit={() => handleRunOrSubmit("submit")}
         onReset={() => {
           setCode(problem.starterCode[language]);
-          // setRunOutput(null);
-          // setSubmitOutput(null);
         }}
       />
 
@@ -301,7 +322,10 @@ export function EditorPanel({
           value={code}
           onChange={(v) => {
             setCode(v || "");
-            localStorage.setItem(`code-${problem._id}-${language}`, v || "");
+            // Only save to localStorage if problem exists
+            if (problem?._id) {
+              localStorage.setItem(`code-${problem._id}-${language}`, v || "");
+            }
           }}
           theme={theme === "dark" ? "vs-dark" : "light"}
           options={{
@@ -309,8 +333,12 @@ export function EditorPanel({
             fontSize: 14,
             automaticLayout: true,
             tabSize: 2,
+            scrollBeyondLastLine: false, // Optional: creates a more native feel
             padding: { top: 16, bottom: 16 },
           }}
+          // Adding a key forces Monaco to remount if language changes, 
+          // which prevents model conflicts, though usually not required if props are stable.
+          // key={language} 
         />
       </div>
 
@@ -446,7 +474,7 @@ export function EditorPanel({
               </div>
             )}
 
-            {/* Tab C: Submission Result (Componentized) */}
+            {/* Tab C: Submission Result */}
             {activeTab === "submission" && (
               <div className="h-full overflow-y-auto pr-2">
                 {!submitOutput || !submitOutput.isSubmit ? (
