@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
-import { CheckCircle, Clock, AlertCircle, ArrowRight } from 'lucide-react'
+import {  ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import RecentACTable from './RecentACTable'
 import Link from 'next/link'
