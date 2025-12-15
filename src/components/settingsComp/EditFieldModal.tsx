@@ -101,7 +101,7 @@ export function EditFieldModal({
     if (isOpen) {
       reset(defaultValues);
     }
-  }, [isOpen, field, currentUser, reset]);
+  }, [isOpen, field, currentUser, defaultValues, reset]);
 
   const onSubmit = async (data: CombinedFormValues) => {
     try {
