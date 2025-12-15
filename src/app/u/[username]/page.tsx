@@ -8,7 +8,6 @@ import { PublicUser } from "@/lib/apiClient/types";
 import { requireAuth } from "@/lib/require-auth";
 import { UserStatisticI } from "@/models/userStatistic.model";
 import { StatsOverviewPrompI } from "@/types/compInterfaces";
-import { notFound } from "next/navigation";
 import React from "react";
 
 export async function getUserProfile(

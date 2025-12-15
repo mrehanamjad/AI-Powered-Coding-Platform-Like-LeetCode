@@ -6,7 +6,6 @@ import {
   Play,
   Settings2,
   Terminal,
-  Cpu,
   Moon,
   Sun,
   Monitor,
@@ -132,7 +131,7 @@ export default function CodeCompiler() {
   const editorRef = useRef<unknown>(null);
 
   // --- Handlers ---
-  const handleEditorDidMount: OnMount = (editor, monaco) => {
+  const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
     editor.focus();
   };
@@ -141,7 +140,7 @@ export default function CodeCompiler() {
     const selectedLang = LANGUAGES.find((l) => l.id === langId);
     if (selectedLang) {
       setLanguage(selectedLang);
-      // @ts-ignore
+      // @ts-expect-error there can be a ts error
       setCode(BOILERPLATES[langId] || "// Code here");
     }
   };
@@ -167,6 +166,7 @@ export default function CodeCompiler() {
         setIsError(true);
       }
     } catch (error) {
+        console.log(error)
       setOutput("Network Error: Failed to connect to compiler service.");
       setIsError(true);
     } finally {

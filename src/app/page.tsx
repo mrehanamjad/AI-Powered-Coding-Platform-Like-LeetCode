@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Code2,
   Sparkles,
   Brain,
   Trophy,
@@ -33,7 +32,7 @@ export default function HomePage() {
                 AI-Powered Coding Platform
               </Badge>
 
-              <h1 className="max-w-4xl text-balance text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight sm:text-6xl lg:text-7xl">
+              <h1 className="max-w-4xl text-balance text-3xl md:text-5xl  xl:text-7xl font-bold tracking-tight leading-tight sm:text-6xl lg:text-7xl">
                 Master Algorithms with{" "}
                 <span className="text-blue-600">AI-Powered</span> Learning
               </h1>
